@@ -4,9 +4,8 @@ const Line = lazy(() => import("../others/Line"));
 const About = (props) => {
   return (
     <div
-      className={`p-4 mb-3 bg-light rounded ${
-        props.className ? props.className : ""
-      }`}
+      className={`p-4 mb-3 bg-light rounded ${props.className ? props.className : ""
+        }`}
     >
       <h4 className="fst-italic">{props.title}</h4>
       <Line className="mb-2" />

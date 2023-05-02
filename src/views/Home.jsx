@@ -11,6 +11,9 @@ import { ReactComponent as IconHdd } from "bootstrap-icons/icons/hdd.svg";
 import { ReactComponent as IconUpcScan } from "bootstrap-icons/icons/upc-scan.svg";
 import { ReactComponent as IconTools } from "bootstrap-icons/icons/tools.svg";
 import axiosInstance from "../axios";
+import { useDispatch, useSelector } from "react-redux";
+import { addProductsAction, productSelector } from "../slices/productSlice";
+import axios from "axios";
 
 const Support = lazy(() => import("../components/Support"));
 const Banner = lazy(() => import("../components/carousel/Banner"));
@@ -21,6 +24,7 @@ const CardImage = lazy(() => import("../components/card/CardImage"));
 const CardDealsOfTheDay = lazy(() =>
   import("../components/card/CardDealsOfTheDay")
 );
+
 
 const HomeView = () => {
   let components = {
@@ -34,18 +38,19 @@ const HomeView = () => {
     IconTools: IconTools,
   };
 
-  const [products, setProducts] = useState([])
-
   const url = process.env.REACT_APP_BE_URL;
+  const [products, setProducts] = useState([])
+  const dispatch = useDispatch();
+  const { filterdProducts } = useSelector((state) => state.product);
+
+
 
   const getData = async () => {
     try {
-      const res = await axiosInstance.get(`${url}/user/getallproducts`);
-      console.log(res)
-      if(res.status === 201){
+      const res = await axios.get(`${url}/user/getallproducts`);
+      if (res.status === 201) {
         setProducts(res?.data?.productList)
       }
-
     } catch (err) {
       console.log(err)
     }
@@ -53,56 +58,83 @@ const HomeView = () => {
   }
 
   useEffect(() => {
+    if (products.length > 0) {
+      dispatch(addProductsAction(products));
+    }
+  }, [products])
+
+
+  useEffect(() => {
     getData()
-  },[])
+  }, [])
 
 
-    const iconProducts = data.iconProducts
-    const rows = [...Array(Math.ceil(iconProducts.length / 4))];
-    // chunk the products into the array of rows
-    const productRows = rows.map((row, idx) =>
-      iconProducts.slice(idx * 4, idx * 4 + 4)
-    );
-    // map the rows as div.row
-    const carouselContent = productRows.map((row, idx) => (
+  const iconProducts = data.iconProducts
+  const rows = [...Array(Math.ceil(iconProducts.length / 4))];
+  // chunk the products into the array of rows
+  const productRows = rows.map((row, idx) =>
+    iconProducts.slice(idx * 4, idx * 4 + 4)
+  );
+  // map the rows as div.row
+  const carouselContent = productRows.map((row, idx) => (
+    <div className="row g-3">
+      {products?.map((product, idx) => {
+        const ProductImage = components["IconLaptop"];
+        return (
+          <div key={product.id} className="col-lg-3 col-sm-6">
+            <CardIcon
+              title={product.name}
+              text={product.description}
+              tips={product.price}
+              to={product.id}
+            >
+              <ProductImage width="80" height="80" />
+            </CardIcon>
+          </div>
+        );
+      })}
+    </div>
+  ));
+
+  const filteredContent = productRows.map((row, idx) => (
+    <div className="row g-3">
+      {filterdProducts?.map((product, idx) => {
+        const ProductImage = components["IconLaptop"];
+        return (
+          <div key={product.id} className="col-lg-3 col-sm-6">
+            <CardIcon
+              title={product.name}
+              text={product.description}
+              tips={product.price}
+              to={product.id}
+            >
+              <ProductImage width="80" height="80" />
+            </CardIcon>
+          </div>
+        );
+      })}
+    </div>
+  ));
+
+
+  return (
+    <React.Fragment>
+      <Banner className="mb-3" id="carouselHomeBanner" data={data.banner} />
+      <div className="container-fluid bg-light mb-3">
         <div className="row g-3">
-          {products?.map((product, idx) => {
-            const ProductImage = components["IconLaptop"];
-            return (
-              <div key={idx} className="col-lg-3 col-sm-6">
-                <CardIcon
-                  title={product.name}
-                  text={product.description}
-                  tips={product.price}
-                  to={product.id}
-                >
-                  <ProductImage  width="80" height="80" />
-                </CardIcon>
-              </div>
-            );
-          })}
-        </div>
-    ));
-
-
-    return (
-      <React.Fragment>
-        <Banner className="mb-3" id="carouselHomeBanner" data={data.banner} />
-        <div className="container-fluid bg-light mb-3">
-          <div className="row g-3">
-            <div className="col-md-">
-              <Carousel id="elect-product-category" className="mb-3">
-                {carouselContent}
-              </Carousel>
-              {/* <Support /> */}
-            </div>
-            {/* <div className="col-md-3">
+          <div className="col-md-">
+            <Carousel id="elect-product-category" className="mb-3">
+              {filterdProducts.length > 0 ? filterdProducts : carouselContent}
+            </Carousel>
+            {/* <Support /> */}
+          </div>
+          {/* <div className="col-md-3">
               <CardLogin className="mb-3" />
               <CardImage src="../../images/banner/Watches.webp" to="promo" />
             </div> */}
-          </div>
         </div>
-        {/* <div className="container-fluid bg-light mb-3">
+      </div>
+      {/* <div className="container-fluid bg-light mb-3">
           <div className="row">
             <div className="col-md-12">
               <CardDealsOfTheDay
@@ -118,10 +150,10 @@ const HomeView = () => {
           </div>
         </div> */}
 
-        {/* <div className="bg-info bg-gradient p-3 text-center mb-3">
+      {/* <div className="bg-info bg-gradient p-3 text-center mb-3">
           <h4 className="m-0">Explore Fashion Collection</h4>
         </div> */}
-        {/* <div className="container">
+      {/* <div className="container">
           <div className="row">
             <div className="col-md-3">
               <Link to="/" className="text-decoration-none">
@@ -165,8 +197,8 @@ const HomeView = () => {
             </div>
           </div>
         </div> */}
-      </React.Fragment>
-    );
-  }
+    </React.Fragment>
+  );
+}
 
 export default HomeView;

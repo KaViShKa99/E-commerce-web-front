@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
 const CardIcon = (props) => {
+
   return (
     <Link to={`product/detail/${props.to}`} className="text-decoration-none">
       <div className="card text-center">

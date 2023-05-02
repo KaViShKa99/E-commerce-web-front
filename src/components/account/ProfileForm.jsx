@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Field, reduxForm } from "redux-form";
 import { compose } from "redux";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
@@ -17,6 +17,8 @@ import { ReactComponent as IconEnvelop } from "bootstrap-icons/icons/envelope.sv
 import { ReactComponent as IconGeoAlt } from "bootstrap-icons/icons/geo-alt.svg";
 import { ReactComponent as IconCalendarEvent } from "bootstrap-icons/icons/calendar-event.svg";
 import { ReactComponent as IconPersonSquareFill } from "bootstrap-icons/icons/person-lines-fill.svg";
+import axiosInstance from "../../axios";
+import { useSelector } from "react-redux";
 
 const ProfileForm = (props) => {
   const {
@@ -27,6 +29,24 @@ const ProfileForm = (props) => {
     onImageChange,
     imagePreview,
   } = props;
+
+  const url = process.env.REACT_APP_BE_URL;
+  const [userDetails, setUserDetails] = useState({})
+  const { user: currentUser } = useSelector((state) => state.auth);
+  console.log(currentUser.email)
+
+  const getData = async () => {
+    const res = await axiosInstance.get(`${url}/user/getuserdetails/${currentUser.email}`,)
+    console.log(res)
+    if (res) {
+      setUserDetails(res.data.message[0])
+    }
+  }
+
+  useEffect(() => {
+    getData()
+  }, [])
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -61,21 +81,23 @@ const ProfileForm = (props) => {
               name="firstName"
               type="text"
               component={renderFormGroupField}
-              placeholder="First Name"
+              placeholder={userDetails.fname}
               icon={IconPerson}
               validate={[required, name]}
               required={true}
+              value={userDetails.fname}
             />
           </li>
           <li className="list-group-item">
-             <Field
+            <Field
               name="lastName"
               type="text"
               component={renderFormGroupField}
-              placeholder="Last Name"
+              placeholder={userDetails.lname}
               icon={IconPerson}
               validate={[required, name]}
               required={true}
+              defaultValue={userDetails.lname}
             />
           </li>
           <li className="list-group-item">
@@ -83,10 +105,11 @@ const ProfileForm = (props) => {
               name="email"
               type="email"
               component={renderFormGroupField}
-              placeholder="Your email"
+              placeholder={userDetails.email}
               icon={IconEnvelop}
               validate={[required, email]}
               required={true}
+              defaultValue={userDetails.email}
             />
           </li>
           {/* <li className="list-group-item">
@@ -116,7 +139,7 @@ const ProfileForm = (props) => {
           <button
             type="submit"
             className="btn btn-primary  d-flex"
-            disabled={submitting}
+            disabled={true}
           >
             Submit
           </button>

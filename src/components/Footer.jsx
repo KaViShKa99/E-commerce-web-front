@@ -184,7 +184,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="container-fluid bg-secondary text-white text-center">
+        {/* <div className="container-fluid bg-secondary text-white text-center">
           <div className="row">
             <div className="col-md-2 py-2">
               <Link to="/" className="text-white text-decoration-none">
@@ -249,7 +249,7 @@ const Footer = () => {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </footer>
     </React.Fragment>
   );

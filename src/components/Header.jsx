@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Search from "./Search";
 import { ReactComponent as IconCart3 } from "bootstrap-icons/icons/cart3.svg";
@@ -13,11 +13,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../slices/auth";
+import axiosInstance from "../axios";
+import { cartSelector } from "../slices/cartSlice";
 
 const Header = () => {
+  const url = process.env.REACT_APP_BE_URL;
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
   const navigate = useNavigate()
+  const [cartData, setCartData] = useState([])
+  const { cartItems } = useSelector(cartSelector)
+
+  const getData = async () => {
+    const res = await axiosInstance.get(`${url}/user/getcartitems/${currentUser.email}`)
+
+    if (res.status === 201) {
+      setCartData(res?.data?.cartDetails)
+    }
+  }
+
+  useEffect(() => {
+    getData()
+  }, [])
+
 
   const logOut = useCallback(() => {
     dispatch(logout());
@@ -25,53 +43,56 @@ const Header = () => {
 
   }, [dispatch]);
 
+  useEffect(() => {
+    setCartData(cartItems)
+  }, [cartItems])
+
+
   return (
     <React.Fragment>
       <header className="p-3 border-bottom bg-light">
         <div className="container-fluid">
           <div className="row g-3">
-            <div className="col-md-3 text-center">
-              <Link to="/">
-                <img
-                  alt="logo"
-                  src="../../images/logo.webp"
-                />
+            <div className="col-md-8 text-center">
+              <Link to="/" style={{ textDecoration: 'none' }}>
+                <h1 style={{ textDecoration: 'none', fontWeight: 'bold' }}>E-Commerce Shop</h1>
               </Link>
             </div>
-            <div className="col-md-5">
+            {/* <div className="col-md-5">
               <Search />
-            </div>
+            </div> */}
             <div className="col-md-4">
               <div className="position-relative d-inline me-3">
                 <Link to="/cart" className="btn btn-primary">
                   <IconCart3 className="i-va" />
-                  <div className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
-                    2
-                  </div>
+                  {currentUser &&
+                    <div className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
+                      {cartData?.length}
+                    </div>}
                 </Link>
               </div>
               <div className="btn-group">
                 <button
                   type="button"
                   className="btn btn-secondary rounded-circle border me-3"
-                  data-toggle="dropdown"
                   aria-expanded="false"
                   aria-label="Profile"
                   data-bs-toggle="dropdown"
+                  onClick={() => navigate("/account/profile")}
                 >
                   <FontAwesomeIcon icon={faUser} className="text-light" />
                 </button>
-                <ul className="dropdown-menu">
+                {/* <ul className="dropdown-menu">
                   <li>
                     <Link className="dropdown-item" to="/account/profile">
                       <IconPersonBadgeFill /> My Profile
                     </Link>
                   </li>
-                  {/* <li>
+                  <li>
                     <Link className="dropdown-item" to="/star/zone">
                       <IconStarFill className="text-warning" /> Star Zone
                     </Link>
-                  </li> */}
+                  </li>
                   <li>
                     <Link className="dropdown-item" to="/account/orders">
                       <IconListCheck className="text-primary" /> Orders
@@ -85,7 +106,7 @@ const Header = () => {
                   <li>
                     <hr className="dropdown-divider" />
                   </li>
-                  {/* <li>
+                  <li>
                     <Link className="dropdown-item" to="/account/notification">
                       <IconBellFill className="text-primary" /> Notification
                     </Link>
@@ -97,13 +118,13 @@ const Header = () => {
                   </li>
                   <li>
                     <hr className="dropdown-divider" />
-                  </li> */}
+                  </li>
                   <li style={{ cursor: "pointer" }}>
                     <div onClick={logOut} className="m-3">
                       <IconDoorClosedFill className="text-danger" /> Logout
                     </div>
                   </li>
-                </ul>
+                </ul> */}
               </div>
               {/* <a
                 href="https://www.buymeacoffee.com/bhaumik"
@@ -115,7 +136,7 @@ const Header = () => {
                   alt="BuyMeACoffee" width="120"
                 />
               </a> */}
-              {currentUser ? (<button onClick={logOut}>
+              {currentUser ? (<button onClick={logOut} style={{ background: 'lightblue', borderRadius: '6px' }}>
                 Log out
               </button>) : (
                 <>

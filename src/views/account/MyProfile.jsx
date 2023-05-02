@@ -39,7 +39,7 @@ class MyProfileView extends Component {
   render() {
     return (
       <div className="container-fluid my-3">
-        <div className="row">
+        <div className="row d-flex justify-content-center">
           <div className="col-md-4">
             <ProfileForm
               onSubmit={this.onSubmitProfile}
@@ -47,9 +47,9 @@ class MyProfileView extends Component {
               imagePreview={this.state.imagePreview}
             />
           </div>
-          <div className="col-md-8">
+          {/* <div className="col-md-8">
             <ChangePasswordForm onSubmit={this.onSubmitChangePassword} />
-          </div>
+          </div> */}
         </div>
       </div>
     );
