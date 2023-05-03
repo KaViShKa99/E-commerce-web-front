@@ -75,6 +75,7 @@ const ProductDetailView = () => {
           quantity: count,
           userEmail: currentUser.email,
           description: product.description
+
         })
         if (res) {
           alert("Product added to cart succesfully")
@@ -89,7 +90,7 @@ const ProductDetailView = () => {
   }
 
   return (
-    <div className="container-fluid mt-3 " style={{ height: '50vh', display: 'flex', alignItems: 'center' }}>
+    <div className="container-fluid mt-3 " style={{ height: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
       <div className="row d-flex justify-content-center">
         <div className="col-md-8" >
           <div className="row mb-3">

@@ -53,7 +53,7 @@ const Header = () => {
       <header className="p-3 border-bottom bg-light">
         <div className="container-fluid">
           <div className="row g-3">
-            <div className="col-md-8 text-center">
+            <div className="col-md-6 text-center">
               <Link to="/" style={{ textDecoration: 'none' }}>
                 <h1 style={{ textDecoration: 'none', fontWeight: 'bold' }}>E-Commerce Shop</h1>
               </Link>
@@ -61,7 +61,7 @@ const Header = () => {
             {/* <div className="col-md-5">
               <Search />
             </div> */}
-            <div className="col-md-4">
+            <div className="col-md-6">
               <div className="position-relative d-inline me-3">
                 <Link to="/cart" className="btn btn-primary">
                   <IconCart3 className="i-va" />
@@ -140,8 +140,12 @@ const Header = () => {
                 Log out
               </button>) : (
                 <>
-                  < Link to="/account/signin">Sign In</Link> |
-                  < Link to="/account/signup"> Sign Up</Link>
+                  <button onClick={() => navigate("/account/signin")} style={{ background: 'lightblue', borderRadius: '6px', marginRight: '10px', width: '100px' }}>
+                    Log In
+                  </button>
+                  <button onClick={() => navigate("/account/signup")} style={{ background: 'lightblue', borderRadius: '6px', marginLeft: '10px', width: '100px' }}>
+                    Sign Up
+                  </button>
                 </>)}
             </div>
           </div>

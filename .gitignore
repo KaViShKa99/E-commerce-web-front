@@ -1,10 +1,10 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-'node_modules/'
 /.pnp
 .pnp.js
 node_modules/**/*.pack
+node_modules/
 
 # testing
 /coverage
@@ -25,3 +25,4 @@ yarn-debug.log*
 yarn-error.log*
 debug.log*
 *.json
+npm-debug.log*

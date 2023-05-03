@@ -14,6 +14,7 @@ import axiosInstance from "../axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addProductsAction, productSelector } from "../slices/productSlice";
 import axios from "axios";
+import { Dropdown } from "react-bootstrap";
 
 const Support = lazy(() => import("../components/Support"));
 const Banner = lazy(() => import("../components/carousel/Banner"));
@@ -42,6 +43,10 @@ const HomeView = () => {
   const [products, setProducts] = useState([])
   const dispatch = useDispatch();
   const { filterdProducts } = useSelector((state) => state.product);
+  const [sort, setSort] = useState([])
+  const [category, setCategory] = useState("")
+  const { user: currentUser } = useSelector((state) => state.auth);
+  const [deleteId, setDeleteId] = useState(null)
 
 
 
@@ -87,6 +92,7 @@ const HomeView = () => {
               text={product.description}
               tips={product.price}
               to={product.id}
+              setDeleteId={setDeleteId}
             >
               <ProductImage width="80" height="80" />
             </CardIcon>
@@ -96,9 +102,23 @@ const HomeView = () => {
     </div>
   ));
 
-  const filteredContent = productRows.map((row, idx) => (
+
+
+
+  const handleSort = (Category) => {
+    if (Category === "All Products") {
+      setSort([])
+      setCategory(Category)
+    } else {
+      let sortedList = products.filter((item) => item.category === Category)
+      setSort(sortedList)
+      setCategory(Category)
+    }
+  }
+
+  const sortContent = productRows.map((row, idx) => (
     <div className="row g-3">
-      {filterdProducts?.map((product, idx) => {
+      {sort?.map((product, idx) => {
         const ProductImage = components["IconLaptop"];
         return (
           <div key={product.id} className="col-lg-3 col-sm-6">
@@ -107,6 +127,7 @@ const HomeView = () => {
               text={product.description}
               tips={product.price}
               to={product.id}
+              setDeleteId={setDeleteId}
             >
               <ProductImage width="80" height="80" />
             </CardIcon>
@@ -116,6 +137,21 @@ const HomeView = () => {
     </div>
   ));
 
+  const handleDelete = async () => {
+    const res = await axiosInstance.post(`${url}/admin/deleteproductitem`, { id: deleteId })
+    if (res.status === 201) {
+      console.log(res)
+      getData()
+    }
+  }
+
+  useEffect(() => {
+    if (deleteId) {
+      handleDelete()
+    }
+  }, [deleteId])
+
+
 
   return (
     <React.Fragment>
@@ -123,8 +159,38 @@ const HomeView = () => {
       <div className="container-fluid bg-light mb-3">
         <div className="row g-3">
           <div className="col-md-">
+            {currentUser?.isAdmin === 1 && (
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <div style={{ marginRight: '20px', marginBottom: '20px' }}>
+                  <h4>
+                    Sort By Category
+                  </h4>
+                </div>
+                <Dropdown>
+                  <Dropdown.Toggle variant="success" id="dropdown-basic">
+                    Category
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item href="#action-8" onClick={() => handleSort("All Products")}>All Products</Dropdown.Item>
+                    <Dropdown.Item href="#action-1" onClick={() => handleSort('Accessories')} >Accessories</Dropdown.Item>
+                    <Dropdown.Item href="#action-2" onClick={() => handleSort('Home')}>Home</Dropdown.Item>
+                    <Dropdown.Item href="#action-3" onClick={() => handleSort('Computer')}>Computer</Dropdown.Item>
+                    <Dropdown.Item href="#action-4" onClick={() => handleSort('Games')}>Games</Dropdown.Item>
+                    <Dropdown.Item href="#action-5" onClick={() => handleSort('Electronics')}>Electronics</Dropdown.Item>
+                    <Dropdown.Item href="#action-6" onClick={() => handleSort('Phone')}>Phone</Dropdown.Item>
+                    <Dropdown.Item href="#action-7" onClick={() => handleSort('Health')}>Health</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+                <div style={{ marginLeft: '20px' }}>
+                  <h4>
+                    {category}
+                  </h4>
+                </div>
+              </div>)}
+
             <Carousel id="elect-product-category" className="mb-3">
-              {filterdProducts.length > 0 ? filterdProducts : carouselContent}
+              {sort.length > 0 ? sortContent : carouselContent}
             </Carousel>
             {/* <Support /> */}
           </div>

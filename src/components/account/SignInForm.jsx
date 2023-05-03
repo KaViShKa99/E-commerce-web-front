@@ -50,6 +50,7 @@ const SignInForm = () => {
         }
       })
       .catch(() => {
+        alert("Login failed!")
         setLoading(false);
       });
   };
