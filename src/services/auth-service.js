@@ -19,7 +19,6 @@ const login = (email, password) => {
             password,
         })
         .then((response) => {
-            console.log(response)
             if (response.data.token) {
                 localStorage.setItem("user", JSON.stringify(response.data));
             } else {

@@ -140,7 +140,6 @@ const HomeView = () => {
   const handleDelete = async () => {
     const res = await axiosInstance.post(`${url}/admin/deleteproductitem`, { id: deleteId })
     if (res.status === 201) {
-      console.log(res)
       getData()
     }
   }

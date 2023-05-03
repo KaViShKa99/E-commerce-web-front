@@ -33,11 +33,9 @@ const ProfileForm = (props) => {
   const url = process.env.REACT_APP_BE_URL;
   const [userDetails, setUserDetails] = useState({})
   const { user: currentUser } = useSelector((state) => state.auth);
-  console.log(currentUser.email)
 
   const getData = async () => {
     const res = await axiosInstance.get(`${url}/user/getuserdetails/${currentUser.email}`,)
-    console.log(res)
     if (res) {
       setUserDetails(res.data.message[0])
     }

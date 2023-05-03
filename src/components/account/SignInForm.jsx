@@ -42,7 +42,6 @@ const SignInForm = () => {
     dispatch(login({ email, password }))
       .unwrap()
       .then((res) => {
-        console.log(res)
         if (res?.user?.status === 200) {
           navigate("/");
         } else {

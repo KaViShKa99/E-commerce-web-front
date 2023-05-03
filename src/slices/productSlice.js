@@ -11,12 +11,10 @@ const productSlice = createSlice({
     reducers: {
         addProductsAction: (state, payload) => {
             state.allProducts = payload.payload;
-            // console.log(state.allProducts)
         },
 
         filteredProductsAction: (state, payload) => {
             state.filterdProducts = payload.payload;
-            // console.log(state.allProducts)
         },
     },
 });

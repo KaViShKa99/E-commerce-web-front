@@ -25,7 +25,6 @@ const CartView = () => {
   const dispatch = useDispatch();
 
   const getData = async () => {
-    console.log('sdfsd')
     const res = await axios.get(`${url}/user/getcartitems/${currentUser.email}`)
 
     if (res.status === 201) {
@@ -33,7 +32,6 @@ const CartView = () => {
       dispatch(addCartItemAction(res?.data?.cartDetails))
       setLoading(false)
     }
-    console.log(res)
   }
 
   useEffect(() => {
@@ -57,14 +55,12 @@ const CartView = () => {
 
   useEffect(() => {
     getTotalPrice()
-    console.log(totalPrice)
   }, [cartData])
 
   const handleDelete = async (id) => {
     setLoading(true)
     const res = await axiosInstance.post(`${url}/user/deletecartitem`, { email: currentUser.email, id: id })
     if (res.status === 201) {
-      console.log(res)
       getData()
     }
   }

@@ -41,7 +41,6 @@ const ProductDetailView = () => {
   const getData = async () => {
     try {
       const res = await axiosInstance.get(`${url}/user/getproductdetails/${productId.id}`);
-      console.log(res.data)
       setProduct(res.data.userDetails[0])
 
     } catch (err) {

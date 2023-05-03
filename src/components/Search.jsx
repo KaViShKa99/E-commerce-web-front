@@ -17,7 +17,6 @@ const Search = () => {
 
   const handleSubmit = (event) => {
     setSearchTerm(event.target.value);
-    console.log(event.target.value)
 
     const filteredProducts = allProducts.filter((product) =>
       product.name.toLowerCase().includes(searchTerm?.toLowerCase())
